@@ -1,2 +1,2 @@
-// @autodto
-let x = 4;
+// @autodto text
+let x = { a: 4, b: ["s"] };
