@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "incremental": true,
+    "allowJs": true,
+    "module": "commonjs",
+    "target": "ES2019",
+    "lib": ["ES2019"],
+    "outDir": "./built",
+    "sourceMap": true,
+    "typeRoots": ["./node_modules/@types", "./src/typings"],
+    "strict": true,
+    "skipLibCheck": true,
+    "baseUrl": "."
+  },
+  "include": ["./*"]
+}
