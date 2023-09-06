@@ -5,8 +5,6 @@ function createProgram(filePath: string) {
   return ts.createProgram([filePath], compilerOptions);
 }
 
-const filePath = "./tests/simple/oneline-1.ts";
-
 function extractTypes(filePath: string) {
   const program = createProgram(filePath);
   function visitNode(
@@ -50,4 +48,6 @@ function extractTypes(filePath: string) {
     });
 }
 
-extractTypes(filePath);
+const [, _program, path] = process.argv;
+
+extractTypes(path);
