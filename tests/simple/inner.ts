@@ -1,5 +1,5 @@
 function f() {
-  // @autodto
+  // @autodto var x
   let x = 4;
 
   return x;

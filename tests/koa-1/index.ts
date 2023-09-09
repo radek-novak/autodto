@@ -1,6 +1,6 @@
 import * as Koa from "koa";
 import * as Router from "koa-router";
-import { getUser } from "./lib/user";
+import userRoutes from "./user";
 
 const app = new Koa();
 const router = new Router();
@@ -14,19 +14,16 @@ async function datafetch() {
 }
 
 router.get("/", async (ctx, next) => {
-  // @autodto
+  // @autodto GET /
   ctx.body = "Hello World";
 });
 
 router.get("/data", async (ctx, next) => {
-  // @autodto
+  // @autodto GET /data
   ctx.body = await datafetch();
 });
 
-router.get("/user/:id", async (ctx, next) => {
-  // @autodto
-  ctx.body = await getUser(ctx.params.id);
-});
+router.use("/user", userRoutes);
 
 app.use(router.routes()).use(router.allowedMethods());
 
