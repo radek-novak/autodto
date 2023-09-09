@@ -7,6 +7,25 @@ function createProgram(filePath: string) {
 
 function extractTypes(filePath: string) {
   const program = createProgram(filePath);
+
+  const result = [] as {
+    filePath: string;
+    rawComment: string;
+    typeString: string;
+    parsedComment?: string;
+  }[];
+  const collect = (rawComment: string, typeString: string) => {
+    const commentMatch = rawComment.match(/\/+\s*?@autodto\s+(.*)/);
+    const parsedComment = commentMatch?.[1];
+
+    result.push({
+      filePath,
+      rawComment,
+      parsedComment,
+      typeString,
+    });
+  };
+
   function visitNode(
     node: ts.Node,
     checker: ts.TypeChecker,
@@ -14,16 +33,27 @@ function extractTypes(filePath: string) {
     isCorrectArg = false
   ) {
     let isCorrect = isCorrectArg;
+    let comment = "";
 
     ts.forEachLeadingCommentRange(fileText, node.getFullStart(), (pos, end) => {
-      const comment = fileText.substring(pos, end);
+      comment = fileText.substring(pos, end);
       isCorrect = comment.includes("@autodto");
     });
-    if (isCorrect && ts.isVariableDeclaration(node)) {
+
+    if (
+      isCorrect &&
+      (ts.isVariableDeclaration(node) || ts.isBinaryExpression(node))
+    ) {
       const type = checker.getTypeAtLocation(node);
       const typeString = checker.typeToString(type);
 
-      console.log(node.pos, node.end, node.getText(), typeString);
+      // console.log(node.pos, node.end, comment, node.getText(), typeString);
+
+      collect(comment, typeString);
+
+      // maybe switch isCorrect to false after collecting type?
+      isCorrect = false;
+      comment = "";
     }
 
     ts.forEachChild(
@@ -46,6 +76,8 @@ function extractTypes(filePath: string) {
       const fileText = sourceFile.getFullText();
       sourceFile.forEachChild((node) => visitNode(node, checker, fileText));
     });
+
+  console.log(result);
 }
 
 const [, _program, path] = process.argv;
