@@ -9,17 +9,17 @@ function extractTypes(filePath: string) {
   const program = createProgram(filePath);
 
   const result = [] as {
-    filePath: string;
+    file: string;
     rawComment: string;
     typeString: string;
     parsedComment?: string;
   }[];
-  const collect = (rawComment: string, typeString: string) => {
+  const collect = (rawComment: string, typeString: string, file: string) => {
     const commentMatch = rawComment.match(/\/+\s*?@autodto\s+(.*)/);
     const parsedComment = commentMatch?.[1];
 
     result.push({
-      filePath,
+      file,
       rawComment,
       parsedComment,
       typeString,
@@ -39,7 +39,6 @@ function extractTypes(filePath: string) {
       comment = fileText.substring(pos, end);
       isCorrect = comment.includes("@autodto");
     });
-
     if (
       isCorrect &&
       (ts.isVariableDeclaration(node) || ts.isBinaryExpression(node))
@@ -49,7 +48,7 @@ function extractTypes(filePath: string) {
 
       // console.log(node.pos, node.end, comment, node.getText(), typeString);
 
-      collect(comment, typeString);
+      collect(comment, typeString, node.getSourceFile().fileName);
 
       // maybe switch isCorrect to false after collecting type?
       isCorrect = false;
