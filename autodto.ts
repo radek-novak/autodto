@@ -1,10 +1,12 @@
 import * as ts from "typescript";
+import { getType } from "./ts-to-jsonschema/json-schema-custom";
+import { JSONSchema7 } from "json-schema";
 
 function createProgram(filePath: string) {
   const compilerOptions = { strict: true };
   return ts.createProgram([filePath], compilerOptions);
 }
-
+type JSONSchema = JSONSchema7;
 function extractTypes(filePath: string) {
   const program = createProgram(filePath);
 
@@ -13,8 +15,14 @@ function extractTypes(filePath: string) {
     rawComment: string;
     typeString: string;
     parsedComment?: string;
+    jsonSchema?: JSONSchema;
   }[];
-  const collect = (rawComment: string, typeString: string, file: string) => {
+  const collect = (
+    rawComment: string,
+    typeString: string,
+    file: string,
+    jsonSchema?: JSONSchema
+  ) => {
     const commentMatch = rawComment.match(/\/+\s*?@autodto\s+(.*)/);
     const parsedComment = commentMatch?.[1];
 
@@ -23,6 +31,7 @@ function extractTypes(filePath: string) {
       rawComment,
       parsedComment,
       typeString,
+      jsonSchema,
     });
   };
 
@@ -45,10 +54,12 @@ function extractTypes(filePath: string) {
     ) {
       const type = checker.getTypeAtLocation(node);
       const typeString = checker.typeToString(type);
+      // console.log(type.getSymbol());
 
+      const jsonSchema = getType(type, program);
       // console.log(node.pos, node.end, comment, node.getText(), typeString);
 
-      collect(comment, typeString, node.getSourceFile().fileName);
+      collect(comment, typeString, node.getSourceFile().fileName, jsonSchema);
 
       // maybe switch isCorrect to false after collecting type?
       isCorrect = false;

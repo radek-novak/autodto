@@ -1,0 +1,10 @@
+OpenAPI has a specific format
+1. generate OpenAPI format disregarding response type
+2. generate JSON schema from typescript types
+  There are tools for this, but they require symbol name, but there's no symbol name for this.
+  I can get type as string or possibly as position in the code, but neither tool seems to be able to use this. They want a file and Symbol name. 
+  a. I use the raw type and generate new Symbol just for the purpose of extraction by these tools
+  b. I extract code from those tools that can use type and not symbol
+
+
+I failed at 2a, it's not that easy to create the type. Gonna continue with 2b next time
