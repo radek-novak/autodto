@@ -1,3 +1,5 @@
+import { ExtractedType } from "./autodto";
+
 type HTTPMethods = "get" | "post" | "put" | "patch" | "delete";
 type TOpenAPI = {
   openapi: string;
@@ -95,15 +97,18 @@ export class OpenAPI {
     this._result.info.title = title;
   }
 
-  addPath(path: string) {
-    this._result.paths[path] = {} as TOpenAPI["paths"][string];
+  private maybeAddPath(path: string) {
+    this._result.paths[path] ??= {} as TOpenAPI["paths"][string];
   }
-  addMethod(path: string, method: HTTPMethods) {
-    this._result.paths[path][method] =
+  private maybeAddMethod(path: string, method: HTTPMethods) {
+    const lowerCaseMethod = method.toLowerCase() as HTTPMethods;
+    this._result.paths[path][lowerCaseMethod] ??=
       {} as TOpenAPI["paths"][string][HTTPMethods];
+
+    return this._result.paths[path][lowerCaseMethod];
   }
 
-  addResponse(
+  private addResponse(
     path: string,
     method: HTTPMethods,
     code: string,
@@ -115,6 +120,25 @@ export class OpenAPI {
         "application/json": {
           schema:
             {} as TOpenAPI["paths"][string][HTTPMethods]["responses"][string]["content"]["application/json"]["schema"],
+        },
+      },
+    };
+  }
+
+  addEndpoint(data: ExtractedType) {
+    const [method, path, summary] = data.parsedComment?.split(" ")!;
+    this.maybeAddPath(path);
+    const endpoint = this.maybeAddMethod(path, method as HTTPMethods);
+
+    endpoint.summary = summary ?? "";
+
+    endpoint.responses = {
+      "200": {
+        description: "Successful response",
+        content: {
+          "application/json": {
+            schema: data.jsonSchema as any,
+          },
         },
       },
     };

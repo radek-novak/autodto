@@ -1,22 +1,26 @@
 import * as ts from "typescript";
 import { getType } from "./ts-to-jsonschema/json-schema-custom";
 import { JSONSchema7 } from "json-schema";
+import { OpenAPI } from "./generate-openapi";
+
+type JSONSchema = JSONSchema7;
+
+export type ExtractedType = {
+  file: string;
+  rawComment: string;
+  typeString: string;
+  parsedComment?: string;
+  jsonSchema?: JSONSchema;
+};
 
 function createProgram(filePath: string) {
   const compilerOptions = { strict: true };
   return ts.createProgram([filePath], compilerOptions);
 }
-type JSONSchema = JSONSchema7;
 function extractTypes(filePath: string) {
   const program = createProgram(filePath);
 
-  const result = [] as {
-    file: string;
-    rawComment: string;
-    typeString: string;
-    parsedComment?: string;
-    jsonSchema?: JSONSchema;
-  }[];
+  const result = [] as ExtractedType[];
   const collect = (
     rawComment: string,
     typeString: string,
@@ -87,9 +91,19 @@ function extractTypes(filePath: string) {
       sourceFile.forEachChild((node) => visitNode(node, checker, fileText));
     });
 
-  console.log(result);
+  // console.log(result);
+
+  return result;
 }
 
 const [, _program, path] = process.argv;
 
-extractTypes(path);
+const result = extractTypes(path);
+
+const openapi = new OpenAPI("new API");
+
+result.forEach((data) => {
+  openapi.addEndpoint(data);
+});
+
+console.log(openapi.toJSON());
