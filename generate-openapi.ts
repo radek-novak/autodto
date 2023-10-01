@@ -126,15 +126,15 @@ export class OpenAPI {
   }
 
   addEndpoint(data: ExtractedType) {
-    const [method, path, summary] = data.parsedComment?.split(" ")!;
+    const [method, path, description] = data.parsedComment?.split(" ")!;
     this.maybeAddPath(path);
     const endpoint = this.maybeAddMethod(path, method as HTTPMethods);
 
-    endpoint.summary = summary ?? "";
+    endpoint.summary = "Source file: " + data.file;
 
     endpoint.responses = {
       "200": {
-        description: "Successful response",
+        description: description ?? "Successful response",
         content: {
           "application/json": {
             schema: data.jsonSchema as any,
