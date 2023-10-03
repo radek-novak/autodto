@@ -130,7 +130,9 @@ export class OpenAPI {
     this.maybeAddPath(path);
     const endpoint = this.maybeAddMethod(path, method as HTTPMethods);
 
-    endpoint.summary = "Source file: " + data.file;
+    // @ts-ignore
+    endpoint["x-source-file"] = data.file;
+    endpoint.summary = "";
 
     endpoint.responses = {
       "200": {

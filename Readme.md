@@ -12,3 +12,5 @@ https://ts-ast-viewer.com/#
 
 
 example command for testing `npm run autodto -- tests/koa-1/index.ts`
+
+check the openapi file with https://editor.swagger.io/
