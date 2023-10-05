@@ -1,7 +1,6 @@
 import * as ts from "typescript";
 import { getType } from "./ts-to-jsonschema/json-schema-custom";
 import { JSONSchema7 } from "json-schema";
-import { OpenAPI } from "./generate-openapi";
 
 type JSONSchema = JSONSchema7;
 
@@ -17,7 +16,7 @@ function createProgram(filePath: string) {
   const compilerOptions = { strict: true };
   return ts.createProgram([filePath], compilerOptions);
 }
-function extractTypes(filePath: string) {
+export function extractTypes(filePath: string) {
   const program = createProgram(filePath);
 
   const result = [] as ExtractedType[];
@@ -95,15 +94,3 @@ function extractTypes(filePath: string) {
 
   return result;
 }
-
-const [, _program, path] = process.argv;
-
-const result = extractTypes(path);
-
-const openapi = new OpenAPI("new API");
-
-result.forEach((data) => {
-  openapi.addEndpoint(data);
-});
-
-console.log(openapi.toJSON());

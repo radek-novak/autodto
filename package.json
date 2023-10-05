@@ -1,18 +1,27 @@
 {
   "name": "briskdoc",
-  "version": "0.0.1",
-  "description": "",
-  "main": "index.js",
+  "version": "0.0.2",
+  "description": "Autogenerate OpenAPI file from comments and typescript types",
+  "main": "dist/index.js",
+  "files": [
+    "dist"
+  ],
   "directories": {
     "test": "tests"
   },
   "scripts": {
+    "build": "rm -rf dist; tsc",
+    "type-check": "tsc --noEmit",
     "schema": "ts-node json-schema.ts",
     "autodto": "ts-node autodto.ts",
+    "start": "ts-node cli",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
+  "peerDependencies": {
+    "typescript": "*"
+  },
   "dependencies": {
     "glob": "^10.3.4",
     "typescript": "^5.2.2",
