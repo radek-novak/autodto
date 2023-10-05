@@ -1,3 +1,20 @@
+typescript compilercode 
+https://basarat.gitbook.io/typescript/overview
+
+older
+https://github.com/microsoft/TypeScript/wiki/Using-the-Compiler-API
+
+similar project
+https://typedoc.org/options/input/
+
+
+https://ts-ast-viewer.com/#
+
+
+example command for testing `npm run autodto -- tests/koa-1/index.ts`
+
+check the openapi file with https://editor.swagger.io/
+
 OpenAPI has a specific format
 1. generate OpenAPI format disregarding response type
 2. generate JSON schema from typescript types
@@ -7,4 +24,5 @@ OpenAPI has a specific format
   b. I extract code from those tools that can use type and not symbol
 
 
-I failed at 2a, it's not that easy to create the type. Gonna continue with 2b next time
+I failed at 2a, it's not that easy to create the type. Gonna continue with 2b next time - that worked
+
