@@ -55,5 +55,23 @@ export function getType(type: ts.Type, program: ts.Program) {
 
   const generator = TJS.buildGenerator(program, settings);
   if (!generator) throw new Error("no generator");
-  return generator.getTypeDefinition(type);
+  const typedefinition = generator.getTypeDefinition(
+    type,
+    false
+    // undefined,
+    // undefined,
+    // undefined,
+    // undefined,
+    // true
+  );
+
+  console.log(generator.ReffedDefinitions);
+
+  return typedefinition;
+}
+
+export function getReffedDefinitions(program: ts.Program) {
+  const generator = TJS.buildGenerator(program, settings);
+  if (!generator) throw new Error("no generator");
+  return generator.ReffedDefinitions;
 }

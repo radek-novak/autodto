@@ -1,5 +1,9 @@
+import * as path from "path";
 import * as ts from "typescript";
-import { getType } from "./ts-to-jsonschema/json-schema-custom";
+import {
+  getType,
+  getReffedDefinitions,
+} from "./ts-to-jsonschema/json-schema-custom";
 import { JSONSchema7 } from "json-schema";
 
 type JSONSchema = JSONSchema7;
@@ -12,12 +16,55 @@ export type ExtractedType = {
   jsonSchema?: JSONSchema;
 };
 
+// function createProgram(filePath: string) {
+//   const compilerOptions = { strict: true };
+//   return ts.createProgram([filePath], compilerOptions);
+// }
+
 function createProgram(filePath: string) {
-  const compilerOptions = { strict: true };
-  return ts.createProgram([filePath], compilerOptions);
+  const configPath = ts.findConfigFile(
+    path.dirname(filePath), // Search start directory
+    ts.sys.fileExists,
+    "tsconfig.json" // Config file name
+  );
+
+  if (!configPath) {
+    console.warn('Could not find a valid "tsconfig.json".');
+    return ts.createProgram([filePath], { strict: true });
+  }
+
+  const configFile = ts.readConfigFile(configPath, ts.sys.readFile);
+  const parsedConfig = ts.parseJsonConfigFileContent(
+    configFile.config,
+    ts.sys,
+    path.dirname(configPath)
+  );
+  delete parsedConfig.options.incremental;
+
+  const allFiles = [filePath, ...parsedConfig.fileNames];
+  return ts.createProgram(allFiles, parsedConfig.options);
+
+  // return ts.createProgram([filePath], parsedConfig.options);
 }
 export function extractTypes(filePath: string) {
   const program = createProgram(filePath);
+  // program.getGlobalDiagnostics().forEach((d) => console.log(d.messageText));
+  // console.log(program.getCompilerOptions());
+  // const diag = program
+  //   .getOptionsDiagnostics()
+  //   .map((d) => console.log(d.messageText));
+  // const projectFiles = program
+  //   .getSourceFiles()
+  //   .filter((sf) => !sf.isDeclarationFile)
+  //   .map((sf) => sf.fileName);
+
+  // console.log(projectFiles);
+  // console.log(diag);
+  // console.log({
+  //   version: ts.version,
+  //   servicesVersion: ts.servicesVersion,
+  //   versionMajorMinor: ts.versionMajorMinor,
+  // });
 
   const result = [] as ExtractedType[];
   const collect = (

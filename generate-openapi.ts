@@ -1,4 +1,5 @@
 import { ExtractedType } from "./autodto";
+import { JSONSchema7 } from "json-schema";
 
 type HTTPMethods = "get" | "post" | "put" | "patch" | "delete";
 type TOpenAPI = {
@@ -31,7 +32,7 @@ type TOpenAPI = {
     >
   >;
   components: {
-    schemas: {};
+    schemas: Record<string, JSONSchema7>;
   };
 };
 
@@ -143,6 +144,16 @@ export class OpenAPI {
           },
         },
       },
+    };
+  }
+
+  addRefDefinition(name: string, schema: JSONSchema7) {
+    this._result.components.schemas[name] = schema;
+  }
+  addRefDefinitions(definitions: Record<string, JSONSchema7>) {
+    this._result.components.schemas = {
+      ...this._result.components.schemas,
+      ...definitions,
     };
   }
 
