@@ -1,9 +1,6 @@
 import * as path from "path";
 import * as ts from "typescript";
-import {
-  getType,
-  getReffedDefinitions,
-} from "./ts-to-jsonschema/json-schema-custom";
+import { getType, buildGenerator } from "./ts-to-jsonschema/json-schema-custom";
 import { JSONSchema7 } from "json-schema";
 
 type JSONSchema = JSONSchema7;
@@ -33,21 +30,25 @@ function createProgram(filePath: string) {
     return ts.createProgram([filePath], { strict: true });
   }
 
+  // use the local tsconfig
   const configFile = ts.readConfigFile(configPath, ts.sys.readFile);
   const parsedConfig = ts.parseJsonConfigFileContent(
     configFile.config,
     ts.sys,
     path.dirname(configPath)
   );
+
+  // but deleted some options that don't work
   delete parsedConfig.options.incremental;
 
   const allFiles = [filePath, ...parsedConfig.fileNames];
   return ts.createProgram(allFiles, parsedConfig.options);
-
-  // return ts.createProgram([filePath], parsedConfig.options);
 }
+
 export function extractTypes(filePath: string) {
   const program = createProgram(filePath);
+  const generator = buildGenerator(program);
+
   // program.getGlobalDiagnostics().forEach((d) => console.log(d.messageText));
   // console.log(program.getCompilerOptions());
   // const diag = program
@@ -106,7 +107,7 @@ export function extractTypes(filePath: string) {
       const typeString = checker.typeToString(type);
       // console.log(type.getSymbol());
 
-      const jsonSchema = getType(type, program);
+      const jsonSchema = getType(type, generator);
       // console.log(node.pos, node.end, comment, node.getText(), typeString);
 
       collect(comment, typeString, node.getSourceFile().fileName, jsonSchema);
@@ -137,7 +138,8 @@ export function extractTypes(filePath: string) {
       sourceFile.forEachChild((node) => visitNode(node, checker, fileText));
     });
 
-  // console.log(result);
-
-  return result;
+  return {
+    responseTypes: result,
+    reffedDefinitions: generator.ReffedDefinitions,
+  };
 }

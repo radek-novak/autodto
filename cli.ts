@@ -6,14 +6,16 @@ import { writeFileSync } from "node:fs";
 
 const [, _program, path] = process.argv;
 
-const result = extractTypes(path);
+const { responseTypes, reffedDefinitions } = extractTypes(path);
 
 const openapi = new OpenAPI("new API");
 
-result.forEach((data) => {
+responseTypes.forEach((data) => {
   openapi.addEndpoint(data);
 });
 
-// console.log(openapi.toJSON());
+openapi.addRefDefinitions(reffedDefinitions);
+
+console.log(reffedDefinitions);
 
 writeFileSync("./openapi.json", openapi.toJSON());

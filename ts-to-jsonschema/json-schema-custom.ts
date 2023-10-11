@@ -39,7 +39,7 @@ const compilerOptions: TJS.CompilerOptions = {
 
 // Also it is possible to get a list of all symbols.
 
-export function getType(type: ts.Type, program: ts.Program) {
+export function buildGenerator(program: ts.Program) {
   // const basePath = "./tests";
 
   // const program = TJS.getProgramFromFiles(
@@ -55,23 +55,20 @@ export function getType(type: ts.Type, program: ts.Program) {
 
   const generator = TJS.buildGenerator(program, settings);
   if (!generator) throw new Error("no generator");
-  const typedefinition = generator.getTypeDefinition(
-    type,
-    false
-    // undefined,
-    // undefined,
-    // undefined,
-    // undefined,
-    // true
-  );
 
-  console.log(generator.ReffedDefinitions);
-
-  return typedefinition;
+  return generator;
 }
 
-export function getReffedDefinitions(program: ts.Program) {
-  const generator = TJS.buildGenerator(program, settings);
-  if (!generator) throw new Error("no generator");
-  return generator.ReffedDefinitions;
+export function getType(type: ts.Type, generator: TJS.JsonSchemaGenerator) {
+  const jsonSchema = generator.getTypeDefinition(
+    type,
+    false,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    true
+  );
+
+  return jsonSchema;
 }

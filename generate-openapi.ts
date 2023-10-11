@@ -1,5 +1,6 @@
 import { ExtractedType } from "./autodto";
 import { JSONSchema7 } from "json-schema";
+import { schemaTransform } from "./utils";
 
 type HTTPMethods = "get" | "post" | "put" | "patch" | "delete";
 type TOpenAPI = {
@@ -34,48 +35,9 @@ type TOpenAPI = {
   components: {
     schemas: Record<string, JSONSchema7>;
   };
-};
 
-// const tpl = {
-//   openapi: "3.0.0",
-//   info: {
-//     title: "Sample API",
-//     version: "1.0.0",
-//   },
-//   paths: {
-//     "/users": {
-//       get: {
-//         summary: "Get list of users",
-//         responses: {
-//           "200": {
-//             description: "Successful response",
-//             content: {
-//               "application/json": {
-//                 schema: {
-//                   $ref: "#/components/schemas/UserArray",
-//                 },
-//               },
-//               "application/xml": {
-//                 schema: {
-//                   $ref: "#/components/schemas/UserArray",
-//                 },
-//               },
-//             },
-//           },
-//           "400": {
-//             description: "Bad Request",
-//           },
-//           "404": {
-//             description: "Not Found",
-//           },
-//         },
-//       },
-//     },
-//   },
-//   components: {
-//     schemas: {},
-//   },
-// };
+  definitions?: Record<string, JSONSchema7>;
+};
 
 export class OpenAPI {
   _result: TOpenAPI;
@@ -140,18 +102,31 @@ export class OpenAPI {
         description: description ?? "Successful response",
         content: {
           "application/json": {
-            schema: data.jsonSchema as any,
+            schema: schemaTransform(data.jsonSchema as any) as any,
           },
         },
       },
     };
   }
 
-  addRefDefinition(name: string, schema: JSONSchema7) {
-    this._result.components.schemas[name] = schema;
+  private postProcessSchema(schema: any) {
+    const properties = schema.properties;
+    if (!properties) return schema;
+
+    const keys = Object.keys(schema.properties);
+
+    for (const key of keys) {
+      if (
+        Array.isArray(properties[key].type) &&
+        properties[key].type.includes("null")
+      ) {
+      }
+    }
   }
+
   addRefDefinitions(definitions: Record<string, JSONSchema7>) {
-    this._result.components.schemas = {
+    // this._result.components.schemas = {
+    this._result.definitions = {
       ...this._result.components.schemas,
       ...definitions,
     };

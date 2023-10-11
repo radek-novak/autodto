@@ -8,4 +8,15 @@ router.get("/:id", async (ctx, next) => {
   ctx.body = await getUser(ctx.params.id);
 });
 
+router.get("/:id/more", async (ctx, next) => {
+  const user = Math.random() > 0.5 ? await getUser(ctx.params.id) : null;
+  const n = Math.random() > 0.5 ? "n" : Math.random() > 0.5 ? undefined : null;
+
+  // @autodto GET /user/:id/rand
+  ctx.body = {
+    user,
+    n,
+  };
+});
+
 export default router.routes();
