@@ -26,3 +26,10 @@ OpenAPI has a specific format
 
 I failed at 2a, it's not that easy to create the type. Gonna continue with 2b next time - that worked
 
+
+### TODO
+- folder structure
+- read config file
+- get input file from local tsconfig
+- account for arg in function calls (`res.json(obj)`)
+- query params, request body, headers

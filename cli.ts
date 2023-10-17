@@ -2,13 +2,39 @@
 
 import { extractTypes } from "./autodto";
 import { OpenAPI } from "./generate-openapi";
-import { writeFileSync } from "node:fs";
+import { writeFileSync, readFileSync } from "node:fs";
+import yargs from "yargs";
 
-const [, _program, path] = process.argv;
+const argv = yargs
+  .option("config", {
+    // alias: "p",
+    describe: "Config path",
+    type: "string",
+    // demandOption: true,
+  })
+  .option("openapiName", {
+    describe: "Name of the Open API documentation",
+    type: "string",
+  })
+  .option("openapiOutPath", {
+    describe: "Output path of the Open API documentation",
+    type: "string",
+  })
+  .parseSync();
 
-const { responseTypes, reffedDefinitions } = extractTypes(path);
+const { openapiName = "new API", openapiOutPath = "./openapi.json" } = argv;
 
-const openapi = new OpenAPI("new API");
+const config = {
+  openapiName,
+  openapiOutPath,
+  ...(argv.config
+    ? JSON.parse(readFileSync("config.json", "utf-8").toString())
+    : {}),
+} as typeof argv;
+
+const { responseTypes, reffedDefinitions } = extractTypes();
+
+const openapi = new OpenAPI(config.openapiName);
 
 responseTypes.forEach((data) => {
   openapi.addEndpoint(data);
@@ -16,6 +42,4 @@ responseTypes.forEach((data) => {
 
 openapi.addRefDefinitions(reffedDefinitions);
 
-console.log(reffedDefinitions);
-
-writeFileSync("./openapi.json", openapi.toJSON());
+writeFileSync(config.openapiOutPath ?? "", openapi.toJSON());

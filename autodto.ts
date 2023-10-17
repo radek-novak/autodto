@@ -13,21 +13,16 @@ export type ExtractedType = {
   jsonSchema?: JSONSchema;
 };
 
-// function createProgram(filePath: string) {
-//   const compilerOptions = { strict: true };
-//   return ts.createProgram([filePath], compilerOptions);
-// }
-
-function createProgram(filePath: string) {
+function createProgram(filePath?: string) {
   const configPath = ts.findConfigFile(
-    path.dirname(filePath), // Search start directory
+    path.dirname(filePath ?? "."), // Search start directory
     ts.sys.fileExists,
     "tsconfig.json" // Config file name
   );
 
   if (!configPath) {
-    console.warn('Could not find a valid "tsconfig.json".');
-    return ts.createProgram([filePath], { strict: true });
+    throw new Error('Could not find a valid "tsconfig.json".');
+    // return ts.createProgram([filePath], { strict: true });
   }
 
   // use the local tsconfig
@@ -38,34 +33,16 @@ function createProgram(filePath: string) {
     path.dirname(configPath)
   );
 
-  // but deleted some options that don't work
+  // but delete some options that don't work
   delete parsedConfig.options.incremental;
 
-  const allFiles = [filePath, ...parsedConfig.fileNames];
-  return ts.createProgram(allFiles, parsedConfig.options);
+  // const allFiles = [filePath, ...parsedConfig.fileNames];
+  return ts.createProgram(parsedConfig.fileNames, parsedConfig.options);
 }
 
-export function extractTypes(filePath: string) {
+export function extractTypes(filePath?: string) {
   const program = createProgram(filePath);
   const generator = buildGenerator(program);
-
-  // program.getGlobalDiagnostics().forEach((d) => console.log(d.messageText));
-  // console.log(program.getCompilerOptions());
-  // const diag = program
-  //   .getOptionsDiagnostics()
-  //   .map((d) => console.log(d.messageText));
-  // const projectFiles = program
-  //   .getSourceFiles()
-  //   .filter((sf) => !sf.isDeclarationFile)
-  //   .map((sf) => sf.fileName);
-
-  // console.log(projectFiles);
-  // console.log(diag);
-  // console.log({
-  //   version: ts.version,
-  //   servicesVersion: ts.servicesVersion,
-  //   versionMajorMinor: ts.versionMajorMinor,
-  // });
 
   const result = [] as ExtractedType[];
   const collect = (
