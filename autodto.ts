@@ -1,6 +1,9 @@
 import * as path from "path";
 import * as ts from "typescript";
-import { getType, buildGenerator } from "./ts-to-jsonschema/json-schema-custom";
+import {
+  getType,
+  buildGenerator,
+} from "./autodto-to-openapi/ts-to-jsonschema/json-schema-custom";
 import { JSONSchema7 } from "json-schema";
 
 type JSONSchema = JSONSchema7;

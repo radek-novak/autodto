@@ -1,6 +1,6 @@
 {
   "name": "briskdoc",
-  "version": "0.0.4-beta.27",
+  "version": "0.0.4-beta.29",
   "description": "Autogenerate OpenAPI file from comments and typescript types",
   "main": "dist/index.js",
   "bin": {

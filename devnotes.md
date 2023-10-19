@@ -30,6 +30,7 @@ I failed at 2a, it's not that easy to create the type. Gonna continue with 2b ne
 ### TODO
 - folder structure
 - read config file
-- get input file from local tsconfig
+- [x] get input file from local tsconfig
+- [x] use CLI arguments for configuration
 - account for arg in function calls (`res.json(obj)`)
 - query params, request body, headers

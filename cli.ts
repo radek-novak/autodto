@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { extractTypes } from "./autodto";
-import { OpenAPI } from "./generate-openapi";
+import { OpenAPI } from "./autodto-to-openapi/generate-openapi";
 import { writeFileSync, readFileSync } from "node:fs";
 import yargs from "yargs";
 
@@ -34,12 +34,16 @@ const config = {
 
 const { responseTypes, reffedDefinitions } = extractTypes();
 
-const openapi = new OpenAPI(config.openapiName);
+function generateOpenAPI() {
+  const openapi = new OpenAPI(config.openapiName);
 
-responseTypes.forEach((data) => {
-  openapi.addEndpoint(data);
-});
+  responseTypes.forEach((data) => {
+    openapi.addEndpoint(data);
+  });
 
-openapi.addRefDefinitions(reffedDefinitions);
+  openapi.addRefDefinitions(reffedDefinitions);
 
-writeFileSync(config.openapiOutPath ?? "", openapi.toJSON());
+  writeFileSync(config.openapiOutPath ?? "", openapi.toJSON());
+}
+
+generateOpenAPI();
