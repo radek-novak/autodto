@@ -29,8 +29,18 @@ I failed at 2a, it's not that easy to create the type. Gonna continue with 2b ne
 
 ### TODO
 - folder structure
-- read config file
+- [x] read config file
 - [x] get input file from local tsconfig
 - [x] use CLI arguments for configuration
 - account for arg in function calls (`res.json(obj)`)
 - query params, request body, headers
+- build client
+- build client definitions
+- 
+
+
+#### Client
+
+Client will be generated from a template .js file, into which a JSON will be injected. It should be a JS file, because it's possible that consuming project won't be able compile TS to JS for a possible build folder or node module and also for the case the client needs to be used by a JS project.
+The client builder shouldn't import JSON file inside of it, because JSON imports may not work in everywhere (would need to test ES modules, Node, Webpack, Rollup, esbuild, swc...).
+A variant would be a client file and a definitions js file, which would be imported by the client file. There would be no advantage over current solution, but it requires import, and choosing import method that would work both for browser and node, so better avoid it.
