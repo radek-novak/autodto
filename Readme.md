@@ -14,7 +14,7 @@ router.get("/data", async (ctx, next) => {
 });
 ```
 
-The tradeoff here is in the endpoint path change, which if 
+The tradeoff here is in the endpoint path change, which needs to be updated manually. However, changes to the type of the response are more common and sneakier, and those are automatically reflected when generating the documentation.
 
 ## Install
 
