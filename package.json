@@ -2,9 +2,9 @@
   "name": "autodto",
   "version": "0.0.4-beta.36",
   "description": "Autogenerate OpenAPI file from comments and typescript types",
-  "main": "dist/index.js",
+  "main": "dist/core/index.js",
   "bin": {
-    "autodto": "./dist/cli.js"
+    "autodto": "./dist/core/cli.js"
   },
   "files": [
     "dist"

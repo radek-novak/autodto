@@ -6,6 +6,7 @@
   "scripts": {
     "doc": "typedoc ./index.ts",
     "start": "ts-node index.ts",
+    "autodto": "autodto",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -14,6 +15,7 @@
   "dependencies": {
     "@types/koa": "^2.13.8",
     "@types/koa-router": "^7.4.4",
+    "autodto": "file:../../autodto-0.0.4-beta.36.tgz",
     "koa": "^2.14.2",
     "koa-router": "^12.0.0"
   },

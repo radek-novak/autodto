@@ -22,3 +22,24 @@ The tradeoff here is in the endpoint path change, which needs to be updated manu
 npm i -D autodto
 ```
 
+## Developing
+
+```sh
+# /
+npm build
+
+npm pack
+# creates a file
+# autodto-<version>.tgz
+
+```
+
+```sh
+# in test folder, eg. tests/koa-1
+# file create when building the main project
+npm install ../../autodto-<version>.tgz
+
+# will build the openapi.json and autodto/client.*
+npm run autodto
+
+```
