@@ -2,3 +2,5 @@ node_modules
 dist
 *.tgz
 openapi.json
+
+.DS_Store

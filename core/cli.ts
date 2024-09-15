@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 
 import { extractTypes } from "./autodto";
-import { OpenAPI } from "./autodto-to-openapi/generate-openapi";
+import { OpenAPI } from "../autodto-to-openapi/generate-openapi";
 import { writeFileSync, readFileSync, mkdirSync } from "node:fs";
 import yargs from "yargs";
-import { buildClient, buildEndpointMap } from "./autodto-to-axios/builder";
+import { buildClient, buildEndpointMap } from "../autodto-to-axios/builder";
 import { join } from "path";
-import buildClientDefinitions from "./autodto-to-axios/build-client-definitions";
+import buildClientDefinitions from "../autodto-to-axios/build-client-definitions";
 
 const argv = yargs
   .option("config", {

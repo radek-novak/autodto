@@ -38,6 +38,13 @@ I failed at 2a, it's not that easy to create the type. Gonna continue with 2b ne
 - build client definitions
 - 
 
+## Operation
+
+1. In the host folder: read the program using local TS and local tsconfig
+2. Genral code:extract types below the special comments into a autodto data structure
+
+Use this data structure for openapi, typed axios interface...
+
 
 #### Client
 

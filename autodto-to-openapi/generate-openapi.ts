@@ -1,4 +1,4 @@
-import { ExtractedType } from "../autodto";
+import { ExtractedType } from "../core/autodto";
 import { JSONSchema7 } from "json-schema";
 import { schemaTransform } from "./utils";
 

@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { ExtractedType } from "../autodto";
+import { ExtractedType } from "../core/autodto";
 import axios, { AxiosRequestConfig } from "axios";
 
 const nameRe = /^[a-zA-Z_][a-zA-Z0-9_]+$/;

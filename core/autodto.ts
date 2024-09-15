@@ -3,7 +3,7 @@ import * as ts from "typescript";
 import {
   getType,
   buildGenerator,
-} from "./autodto-to-openapi/ts-to-jsonschema/json-schema-custom";
+} from "../autodto-to-openapi/ts-to-jsonschema/json-schema-custom";
 import { JSONSchema7 } from "json-schema";
 
 type JSONSchema = JSONSchema7;
@@ -117,6 +117,12 @@ export function extractTypes(filePath?: string) {
       const fileText = sourceFile.getFullText();
       sourceFile.forEachChild((node) => visitNode(node, checker, fileText));
     });
+
+  console.log("Extracted types:", JSON.stringify(result, null, 2));
+  console.log(
+    "Referenced definitions:",
+    JSON.stringify(generator.ReffedDefinitions, null, 2)
+  );
 
   return {
     responseTypes: result,
